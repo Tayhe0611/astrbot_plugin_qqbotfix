@@ -4,15 +4,15 @@
 
 AstrBot QQ 官方适配器（`qq_official` Gateway/WS）的运行时兼容补丁，支持按钮交互、发送者头像映射、群聊被动键盘回复，以及可选的频道私聊文本发送。交互回调和发送者头像映射也支持 `qq_official_webhook`。本插件不会修改 AstrBot 核心文件，也不会自行伪造 `AstrMessageEvent`。
 
-> **安全默认值：**`managed_platform_ids` 默认为空列表，采用 fail-closed 策略。只有显式配置实例 ID 后，插件才会为指定 QQ 实例挂接回调或启用 WS interaction intent。迁移消费者之前，不要将实例 ID 添加到此列表。
+> **安全默认值**：`managed_platform_ids` 默认为空列表，采用 fail-closed 策略。只有显式配置实例 ID 后，插件才会为指定 QQ 实例挂接回调或启用 WS interaction intent。迁移消费者之前，不要将实例 ID 添加到此列表。
 
 ## 功能概览
 
-- **交互桥接：**消费者可按平台实例 ID 注册精确 `button_data` 或前缀路由；每次交互只分发到一个路由，支持自动/手动 ACK 和回退 ACK。
-- **群聊被动键盘回复：**通过 `sendgroupkeyboard()` 回复当前有效群聊事件；不支持主动群推送，不会在超时后自动重试。
-- **发送者头像兼容补丁：**默认启用；为受管实例补全频道私聊头像，并将原始消息头像映射到 `sender.avatar`。查找失败时继续原始消息处理。
-- **可选频道私聊主动文本发送：**默认关闭；仅支持指定 `qq_official` WS 实例上的文本/Markdown，不回退到 C2C。
-- **消费者迁移：**CS Match 迁移说明见 [`CS_MIGRATION.md`](CS_MIGRATION.md)。
+- **交互桥接**：消费者可按平台实例 ID 注册精确 `button_data` 或前缀路由；每次交互只分发到一个路由，支持自动/手动 ACK 和回退 ACK。
+- **群聊被动键盘回复**：通过 `sendgroupkeyboard()` 回复当前有效群聊事件；不支持主动群推送，不会在超时后自动重试。
+- **发送者头像兼容补丁**：默认启用；为受管实例补全频道私聊头像，并将原始消息头像映射到 `sender.avatar`。查找失败时继续原始消息处理。
+- **可选频道私聊主动文本发送**：默认关闭；仅支持指定 `qq_official` WS 实例上的文本/Markdown，不回退到 C2C。
+- **消费者迁移**：CS Match 迁移说明见 [`CS_MIGRATION.md`](CS_MIGRATION.md)。
 
 ## 配置与安装
 

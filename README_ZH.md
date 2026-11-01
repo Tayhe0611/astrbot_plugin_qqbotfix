@@ -120,8 +120,8 @@ await sendgroupkeyboard(
 
 独立的 `core/avatar_patch.py` 模块处理两个阶段：
 
-1. **频道私聊补全，新增于 `0.4.1-beta.4`：**在 AstrBot 解析消息之前，包装 BotPy 客户端的 `on_direct_message_create()` 回调。如果 `message.author.avatar` 缺失/为空，则先复用 `raw_data.author.avatar` 中已有的头像。否则，调用 `get_guild_member(guild_id=message.src_guild_id, user_id=message.author.id)` 查询，并读取返回成员的 `user.avatar`。将成功查到的值写入 `message.author.avatar`，并在可用时写入 `raw_data.author.avatar`，然后调用原始回调。如果 BotPy 未提供相应对象字段，也可以从 `raw_data` 读取源频道和用户 ID。
-2. **发送者映射，自 `0.4.1-beta.3` 起提供：**包装每个受管适配器的 `commit_event()` 方法。在解析之后、加入队列之前，将非空的 `message.raw_message.author.avatar` 复制到 `message.sender.avatar`。这不会全局替换共享的 QQ 静态解析器，也不会编辑 AstrBot 核心、`MessageMember`、`bridge.py` 或交互回调。
+1. **频道私聊补全，新增于 `0.4.1-beta.4`**：在 AstrBot 解析消息之前，包装 BotPy 客户端的 `on_direct_message_create()` 回调。如果 `message.author.avatar` 缺失/为空，则先复用 `raw_data.author.avatar` 中已有的头像。否则，调用 `get_guild_member(guild_id=message.src_guild_id, user_id=message.author.id)` 查询，并读取返回成员的 `user.avatar`。将成功查到的值写入 `message.author.avatar`，并在可用时写入 `raw_data.author.avatar`，然后调用原始回调。如果 BotPy 未提供相应对象字段，也可以从 `raw_data` 读取源频道和用户 ID。
+2. **发送者映射，自 `0.4.1-beta.3` 起提供**：包装每个受管适配器的 `commit_event()` 方法。在解析之后、加入队列之前，将非空的 `message.raw_message.author.avatar` 复制到 `message.sender.avatar`。这不会全局替换共享的 QQ 静态解析器，也不会编辑 AstrBot 核心、`MessageMember`、`bridge.py` 或交互回调。
 
 查找/缓存行为：
 
