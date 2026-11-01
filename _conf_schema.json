@@ -1,0 +1,41 @@
+{
+  "enabled": {
+    "description": "启用 QQ 官方适配器修复",
+    "type": "bool",
+    "default": true,
+    "hint": "关闭后会还原本插件安装的全部运行时补丁。"
+  },
+  "managed_platform_ids": {
+    "description": "由本插件独占桥接的 QQ 平台实例 ID",
+    "type": "list",
+    "default": [],
+    "hint": "必填且按实例分配；只填写已将消费者迁移到本桥接器的 QQ 实例 ID。留空时 fail-closed，不 patch 任何 client。",
+    "items": {
+      "type": "string"
+    }
+  },
+  "ack_timeout": {
+    "description": "单次 interaction ACK 请求超时（秒）",
+    "type": "float",
+    "default": 3.0,
+    "hint": "每个 interaction 最多调用一次 BotPy ACK API；超时后不会重试，避免重复回执。"
+  },
+  "channel_dm_push_enabled": {
+    "description": "启用 QQ 频道私聊主动文本推送补丁",
+    "type": "bool",
+    "default": false,
+    "hint": "仅作用于 managed_platform_ids 中的 qq_official WS 实例；只支持文本/Markdown，缓存仅在本进程有效，目标不明确时拒绝发送。"
+  },
+  "debug_log_payload": {
+    "description": "输出完整按钮回调 payload",
+    "type": "bool",
+    "default": false,
+    "hint": "完整 payload 可能包含用户/群/频道标识及按钮数据，默认关闭。"
+  },
+  "avatar_patch_enabled": {
+    "description": "启用 QQ 消息发送者头像兼容补丁",
+    "type": "bool",
+    "default": true,
+    "hint": "仅作用于 managed_platform_ids 中的 QQ 官方 WS/Webhook 实例；保留已有头像。频道私聊头像缺失时按 src_guild_id 和 author.id 查询成员头像（带超时及进程内缓存），再补入 sender.avatar。"
+  }
+}
