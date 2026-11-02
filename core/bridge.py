@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import asyncio
 import inspect
-import logging
 import math
 from dataclasses import dataclass
 from typing import Any
@@ -10,7 +9,6 @@ from typing import Any
 from .models import InteractionAcknowledger, InteractionContext, _get
 from .registry import InteractionRegistry, InteractionRoute
 
-LOGGER = logging.getLogger("astrbot_plugin_qqbotfix")
 SUPPORTED_ADAPTERS = {"qq_official", "qq_official_webhook"}
 CALLBACK_NAME = "on_interaction_create"
 INTERACTION_INTENT_FALLBACK = 1 << 26
@@ -72,7 +70,7 @@ class InteractionBridge:
         *,
         ack_timeout: float = 3.0,
         debug_log_payload: bool = False,
-        logger: logging.Logger | Any = LOGGER,
+        logger: Any,
     ) -> None:
         self.registry = registry
         timeout = float(ack_timeout)

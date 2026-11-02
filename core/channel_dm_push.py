@@ -1,11 +1,9 @@
 from __future__ import annotations
 
 import inspect
-import logging
 from dataclasses import dataclass
 from typing import Any
 
-LOGGER = logging.getLogger("astrbot_plugin_qqbotfix")
 SUPPORTED_ADAPTERS = {"qq_official"}
 DIRECT_CALLBACK_NAME = "on_direct_message_create"
 SEND_METHOD_NAME = "send_by_session"
@@ -82,7 +80,7 @@ class ChannelDMPushBridge:
     rich media is rejected rather than going through the C2C upload path.
     """
 
-    def __init__(self, *, logger: logging.Logger | Any = LOGGER) -> None:
+    def __init__(self, *, logger: Any) -> None:
         self.logger = logger
         self._patches: dict[int, _PatchRecord] = {}
         self._sessions: dict[int, DirectMessageSessionCache] = {}

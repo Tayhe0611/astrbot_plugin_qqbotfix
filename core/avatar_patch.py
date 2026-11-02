@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import asyncio
 import inspect
-import logging
 import time
 from collections import OrderedDict
 from collections.abc import Mapping, MutableMapping
@@ -10,7 +9,6 @@ from dataclasses import dataclass, field
 from functools import wraps
 from typing import Any
 
-LOGGER = logging.getLogger("astrbot_plugin_qqbotfix")
 SUPPORTED_ADAPTERS = {"qq_official", "qq_official_webhook"}
 COMMIT_METHOD_NAME = "commit_event"
 DIRECT_CALLBACK_NAME = "on_direct_message_create"
@@ -59,7 +57,7 @@ class SenderAvatarPatch:
     replacing the global parser, MessageMember, or interaction callbacks.
     """
 
-    def __init__(self, *, logger: logging.Logger | Any = LOGGER) -> None:
+    def __init__(self, *, logger: Any) -> None:
         self.logger = logger
         self._patches: dict[int, _PatchRecord] = {}
         self._clock = time.monotonic

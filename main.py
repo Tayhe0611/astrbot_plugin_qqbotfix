@@ -1,16 +1,14 @@
 from __future__ import annotations
 
-import logging
 import math
 from typing import Any, Iterable
 
+from astrbot.api import logger as astrbot_logger
+
 try:
-    from astrbot.api import logger as astrbot_logger
     from astrbot.api.event import filter
     from astrbot.api.star import Context, Star, register
 except ImportError:  # Allows unit tests to run without an AstrBot installation.
-    astrbot_logger = logging.getLogger("astrbot_plugin_qqbotfix")
-
     class Context:  # type: ignore[no-redef]
         pass
 
@@ -52,7 +50,7 @@ except ImportError:  # Tests may load main.py as a top-level module.
     )
 
 PLUGIN_NAME = "astrbot_plugin_qqbotfix"
-PLUGIN_VERSION = "0.4.1-beta.5"
+PLUGIN_VERSION = "0.4.2"
 
 
 def register_interaction_handler(
