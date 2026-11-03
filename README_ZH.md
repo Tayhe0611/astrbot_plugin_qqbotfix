@@ -4,6 +4,10 @@
 
 运行时兼容补丁，用于支持 AstrBot 的 QQ 官方适配器 `qq_official`（Gateway/WS）上的按钮交互、发送者头像、群聊被动键盘回复，以及可选的频道私聊文本发送。交互回调和发送者头像映射也支持 `qq_official_webhook`。本插件不会编辑 AstrBot 核心文件，也不会自行伪造 `AstrMessageEvent`。
 
+Copyright (C) 2026 tangshusheng。
+
+本项目基于 [GNU Affero 通用公共许可证第 3 版或更高版本](LICENSE)授权。
+
 ## 所有权与配置
 
 桥接器采用 **fail-closed** 策略：`_conf_schema.json` 中的 `managed_platform_ids` 默认为空列表，因此在操作人员明确将平台实例 ID 分配给此桥接器之前，不会 patch 任何 QQ 客户端。请使用 AstrBot 平台配置中显示的实例 ID。只有这些 ID 才会挂接回调；对于 WS，也只有这些 ID 会启用 interaction intent。

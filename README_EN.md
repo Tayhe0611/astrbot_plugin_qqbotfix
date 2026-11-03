@@ -8,6 +8,10 @@ passive group keyboard replies, and opt-in channel-DM text sends on AstrBot's
 also support `qq_official_webhook`. The plugin does not edit AstrBot core files
 or fabricate an `AstrMessageEvent` itself.
 
+Copyright (C) 2026 tangshusheng.
+
+Licensed under the [GNU Affero General Public License v3.0 or later](LICENSE).
+
 ## Ownership and configuration
 
 The bridge is **fail-closed**: `_conf_schema.json` defaults
