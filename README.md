@@ -1,38 +1,67 @@
-# astrbot_plugin_qqbotfix
+<h1 align="center">QQ 官方适配器修复</h1>
 
-[简体中文](README.md) | [English](README_EN.md)
+<p align="center">
+  <strong>让 AstrBot 的 QQ 官方适配器更好地支持按钮交互、头像与消息发送。</strong>
+</p>
 
-AstrBot QQ 官方适配器（`qq_official` Gateway/WS）的运行时兼容补丁，支持按钮交互、发送者头像映射、群聊被动键盘回复，以及可选的频道私聊文本发送。交互回调和发送者头像映射也支持 `qq_official_webhook`。本插件不会修改 AstrBot 核心文件，也不会自行伪造 `AstrMessageEvent`。
+<p align="center">
+  <a href="https://github.com/tangshusheng/astrbot_plugin_qqbotfix/releases/latest"><img alt="Latest release" src="https://img.shields.io/github/v/release/tangshusheng/astrbot_plugin_qqbotfix?style=for-the-badge&label=release" /></a>
+  <a href="https://github.com/tangshusheng/astrbot_plugin_qqbotfix/blob/main/LICENSE"><img alt="License: AGPL-3.0-or-later" src="https://img.shields.io/badge/license-AGPL--3.0--or--later-blue?style=for-the-badge" /></a>
+  <a href="https://github.com/Soulter/AstrBot"><img alt="AstrBot plugin" src="https://img.shields.io/badge/AstrBot-plugin-00A86B?style=for-the-badge" /></a>
+  <a href="https://github.com/tangshusheng/astrbot_plugin_qqbotfix/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/tangshusheng/astrbot_plugin_qqbotfix?style=for-the-badge&color=gold" /></a>
+</p>
 
-Copyright (C) 2026 tangshusheng。
+<p align="center">
+  <a href="README.md">简体中文</a> · <a href="README_EN.md">English</a> · <a href="README_ZH.md">中文详细文档</a>
+</p>
 
-本项目基于 [GNU Affero 通用公共许可证第 3 版或更高版本](LICENSE)授权。
+适用于 AstrBot `qq_official`（Gateway/WS）适配器的运行时兼容补丁，也支持 `qq_official_webhook` 的交互回调和发送者头像映射。本插件不修改 AstrBot 核心文件，也不会自行伪造 `AstrMessageEvent`。
 
-> **安全默认值**：`managed_platform_ids` 默认为空列表，采用 fail-closed 策略。只有显式配置实例 ID 后，插件才会为指定 QQ 实例挂接回调或启用 WS interaction intent。迁移消费者之前，不要将实例 ID 添加到此列表。
+> **安全默认值：** `managed_platform_ids` 默认为空。只有将已迁移消费者对应的 QQ 平台实例 ID 明确加入列表后，插件才会接管该实例；留空时不会 patch 任何 QQ client。
 
-## 功能概览
+## 目录
 
-- **交互桥接**：消费者可按平台实例 ID 注册精确 `button_data` 或前缀路由；每次交互只分发到一个路由，支持自动/手动 ACK 和回退 ACK。
-- **群聊被动键盘回复**：通过 `sendgroupkeyboard()` 回复当前有效群聊事件；不支持主动群推送，不会在超时后自动重试。
-- **发送者头像兼容补丁**：默认启用；为受管实例补全频道私聊头像，并将原始消息头像映射到 `sender.avatar`。查找失败时继续原始消息处理。
-- **可选频道私聊主动文本发送**：默认关闭；仅支持指定 `qq_official` WS 实例上的文本/Markdown，不回退到 C2C。
-- **消费者迁移**：CS Match 迁移说明见 [`CS_MIGRATION.md`](CS_MIGRATION.md)。
+- [功能一览](#功能一览)
+- [安装与快速配置](#安装与快速配置)
+- [常用配置](#常用配置)
+- [详细文档](#详细文档)
+- [作者与许可证](#作者与许可证)
 
-## 配置与安装
+## 功能一览
 
-在 AstrBot 插件配置中设置：
+| 能力 | 说明 |
+| --- | --- |
+| **按钮交互桥接** | 消费者按平台实例 ID 注册精确或前缀路由；每次交互只分发给一条路由，并提供自动 / 手动 ACK。 |
+| **群聊被动键盘回复** | 使用 `sendgroupkeyboard()` 回复当前有效的 QQ 群聊事件；不做主动群推送，也不会在超时后重试。 |
+| **发送者头像兼容** | 为受管实例补全频道私聊头像，并将原始头像映射到 `sender.avatar`；查询失败不阻塞原消息处理。 |
+| **频道私聊文本发送（可选）** | 默认关闭；仅限指定的 `qq_official` WS 实例，发送目标不明确时拒绝发送，不回退到 C2C。 |
 
-- `enabled`: 是否启用补丁，默认 `true`。
-- `managed_platform_ids`: 默认 `[]`。填写已迁移消费者并由此桥接器管理的 QQ 平台实例 ID；每个消费者路由也必须限定其处理的平台 ID。
-- `ack_timeout`: 单次 interaction ACK 请求超时（秒），默认 `3.0`；超时不会重试。
-- `channel_dm_push_enabled`: 默认 `false`；仅对受管 `qq_official` WS 实例生效。
-- `avatar_patch_enabled`: 默认 `true`；仅对受管 QQ 官方 WS/Webhook 实例生效。
-- `debug_log_payload`: 默认 `false`；完整 payload 可能包含用户、群、频道标识及按钮数据。
+## 安装与快速配置
 
-完整行为、生命周期限制、接口用法和示例请见 [简体中文详细文档](README_ZH.md)；原始英文详细文档请见 [English detailed README](README_EN.md)。
+1. 在 AstrBot 插件管理中搜索 **QQ 官方适配器修复** 安装；或从[最新 Release](https://github.com/tangshusheng/astrbot_plugin_qqbotfix/releases/latest)下载 ZIP 后导入。
+2. 在插件配置中找到 QQ 平台实例 ID。先迁移使用本桥接器的消费者，再只填写这些实例 ID；未迁移的实例保持不变。
+3. 保存并重载插件。可选频道私聊文本发送需另外开启；它默认关闭。
 
-本地测试：
+## 常用配置
 
-```powershell
-python -m unittest discover -s tests -v
-```
+| 配置项 | 默认值 | 用途 |
+| --- | --- | --- |
+| `enabled` | `true` | 总开关；关闭时还原本插件安装的运行时补丁。 |
+| `managed_platform_ids` | `[]` | 由本桥接器接管的 QQ 实例 ID。留空时 fail-closed，不 patch client。 |
+| `ack_timeout` | `3.0` 秒 | 单次 interaction ACK 请求超时；不会自动重试。 |
+| `avatar_patch_enabled` | `true` | 为受管 WS / Webhook 实例启用头像兼容补丁。 |
+| `channel_dm_push_enabled` | `false` | 为受管 `qq_official` WS 实例启用频道私聊文本发送。 |
+| `debug_log_payload` | `false` | 输出完整按钮回调 payload；其中可能含用户、群、频道标识及按钮数据。 |
+
+**迁移提示：** 不要让旧消费者和本桥接器同时 patch 同一 QQ client 的回调或 intent。消费者迁移示例见 [CS Match 迁移说明](CS_MIGRATION.md)。
+
+## 详细文档
+
+- [中文详细文档](README_ZH.md)：接口、ACK、生命周期、群键盘、头像与频道私聊发送行为。
+- [English detailed README](README_EN.md)
+- [插件配置真源](./_conf_schema.json)
+- [CS Match 迁移说明](./CS_MIGRATION.md)
+
+## 作者与许可证
+
+Copyright (C) 2026 tangshusheng。基于 [GNU Affero General Public License v3.0 or later（AGPL-3.0-or-later）](LICENSE)授权。

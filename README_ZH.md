@@ -1,12 +1,61 @@
-# astrbot_plugin_qqbotfix
+<h1 align="center">QQ 官方适配器修复</h1>
 
-[简体中文](README_ZH.md) | [English](README_EN.md) | [项目首页](README.md)
+<p align="center"><strong>让 AstrBot 的 QQ 官方适配器更好地支持按钮交互、头像与消息发送。</strong></p>
 
-运行时兼容补丁，用于支持 AstrBot 的 QQ 官方适配器 `qq_official`（Gateway/WS）上的按钮交互、发送者头像、群聊被动键盘回复，以及可选的频道私聊文本发送。交互回调和发送者头像映射也支持 `qq_official_webhook`。本插件不会编辑 AstrBot 核心文件，也不会自行伪造 `AstrMessageEvent`。
+<p align="center">
+  <a href="https://github.com/tangshusheng/astrbot_plugin_qqbotfix/releases/latest"><img alt="最新版本" src="https://img.shields.io/github/v/release/tangshusheng/astrbot_plugin_qqbotfix?style=for-the-badge&label=release" /></a>
+  <a href="https://github.com/tangshusheng/astrbot_plugin_qqbotfix/blob/main/LICENSE"><img alt="AGPL-3.0-or-later 许可证" src="https://img.shields.io/badge/license-AGPL--3.0--or--later-blue?style=for-the-badge" /></a>
+  <a href="https://github.com/Soulter/AstrBot"><img alt="AstrBot 插件" src="https://img.shields.io/badge/AstrBot-plugin-00A86B?style=for-the-badge" /></a>
+  <a href="https://github.com/tangshusheng/astrbot_plugin_qqbotfix/stargazers"><img alt="GitHub Stars" src="https://img.shields.io/github/stars/tangshusheng/astrbot_plugin_qqbotfix?style=for-the-badge&color=gold" /></a>
+</p>
 
-Copyright (C) 2026 tangshusheng。
+<p align="center"><a href="README.md">项目首页</a> · <a href="README_ZH.md">中文详细文档</a> · <a href="README_EN.md">English</a></p>
 
-本项目基于 [GNU Affero 通用公共许可证第 3 版或更高版本](LICENSE)授权。
+适用于 AstrBot `qq_official`（Gateway/WS）适配器的运行时兼容补丁，也支持 `qq_official_webhook` 的交互回调和发送者头像映射。本插件不会修改 AstrBot 核心文件，也不会自行伪造 `AstrMessageEvent`。
+
+> **安全默认值：** `managed_platform_ids` 默认为空。只有在消费者完成迁移后，才将对应 QQ 平台实例 ID 加入列表；留空时不会 patch 任何 QQ client。
+
+## 目录
+
+- [功能一览](#功能一览)
+- [安装与快速配置](#安装与快速配置)
+- [常用配置](#常用配置)
+- [所有权与配置](#所有权与配置)
+- [消费者 API](#消费者-api)
+- [生命周期约束](#生命周期约束)
+- [QQ 群聊被动键盘回复](#qq-群聊被动键盘回复)
+- [QQ 发送者头像兼容补丁](#qq-发送者头像兼容补丁)
+- [可选的频道私聊主动文本发送](#可选的频道私聊主动文本发送)
+- [CS Match 迁移](#cs-match-迁移)
+- [本地测试](#本地测试)
+
+## 功能一览
+
+| 能力 | 说明 |
+| --- | --- |
+| **按钮交互桥接** | 按平台实例 ID 注册精确或前缀路由；每次交互只分发给一条路由，支持自动 / 手动 ACK。 |
+| **群聊被动键盘回复** | 回复当前有效的 QQ 群聊事件；不支持主动群推送，也不会在超时后重试。 |
+| **发送者头像兼容** | 为受管实例补全频道私聊头像，并将原始头像映射到 `sender.avatar`；查找失败不会阻塞消息处理。 |
+| **频道私聊文本发送（可选）** | 默认关闭；仅限指定的 `qq_official` WS 实例，目标不明确时拒绝发送，不回退到 C2C。 |
+
+## 安装与快速配置
+
+1. 在 AstrBot 插件管理中搜索 **QQ 官方适配器修复** 安装，或从[最新 Release](https://github.com/tangshusheng/astrbot_plugin_qqbotfix/releases/latest)下载 ZIP 后导入。
+2. 先迁移要使用本桥接器的消费者，再在插件配置中填写对应的 QQ 平台实例 ID。不要将仍由旧消费者管理的实例交给桥接器。
+3. 保存并重载插件。频道私聊主动文本发送为可选功能，默认关闭。
+
+## 常用配置
+
+| 配置项 | 默认值 | 说明 |
+| --- | --- | --- |
+| `enabled` | `true` | 总开关；关闭后还原本插件安装的运行时补丁。 |
+| `managed_platform_ids` | `[]` | 本桥接器接管的 QQ 实例 ID；留空时 fail-closed，不 patch client。 |
+| `ack_timeout` | `3.0` 秒 | 单次 interaction ACK 请求超时；不会自动重试。 |
+| `avatar_patch_enabled` | `true` | 为受管 WS / Webhook 实例启用头像兼容补丁。 |
+| `channel_dm_push_enabled` | `false` | 为受管 `qq_official` WS 实例启用频道私聊文本发送。 |
+| `debug_log_payload` | `false` | 输出完整按钮回调 payload；其中可能包含用户、群、频道标识及按钮数据。 |
+
+Copyright (C) 2026 tangshusheng。本项目基于 [GNU Affero 通用公共许可证第 3 版或更高版本](LICENSE)授权。
 
 ## 所有权与配置
 

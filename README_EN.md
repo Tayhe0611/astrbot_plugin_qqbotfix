@@ -1,6 +1,17 @@
-# astrbot_plugin_qqbotfix
+<h1 align="center">QQ Official Adapter Fix</h1>
 
-[简体中文](README.md) | [English](README_EN.md)
+<p align="center"><strong>Runtime compatibility patches for AstrBot's QQ official adapters.</strong></p>
+
+<p align="center">
+  <a href="https://github.com/tangshusheng/astrbot_plugin_qqbotfix/releases/latest"><img alt="Latest release" src="https://img.shields.io/github/v/release/tangshusheng/astrbot_plugin_qqbotfix?style=for-the-badge&label=release" /></a>
+  <a href="https://github.com/tangshusheng/astrbot_plugin_qqbotfix/blob/main/LICENSE"><img alt="License: AGPL-3.0-or-later" src="https://img.shields.io/badge/license-AGPL--3.0--or--later-blue?style=for-the-badge" /></a>
+  <a href="https://github.com/Soulter/AstrBot"><img alt="AstrBot plugin" src="https://img.shields.io/badge/AstrBot-plugin-00A86B?style=for-the-badge" /></a>
+  <a href="https://github.com/tangshusheng/astrbot_plugin_qqbotfix/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/tangshusheng/astrbot_plugin_qqbotfix?style=for-the-badge&color=gold" /></a>
+</p>
+
+<p align="center">
+  <a href="README.md">简体中文</a> · <a href="README_EN.md">English</a> · <a href="README_ZH.md">中文详细文档</a>
+</p>
 
 Runtime compatibility patches for QQ official button interactions, sender avatars,
 passive group keyboard replies, and opt-in channel-DM text sends on AstrBot's
@@ -8,9 +19,37 @@ passive group keyboard replies, and opt-in channel-DM text sends on AstrBot's
 also support `qq_official_webhook`. The plugin does not edit AstrBot core files
 or fabricate an `AstrMessageEvent` itself.
 
-Copyright (C) 2026 tangshusheng.
+Copyright (C) 2026 tangshusheng. Licensed under the [GNU Affero General Public License v3.0 or later](LICENSE).
 
-Licensed under the [GNU Affero General Public License v3.0 or later](LICENSE).
+> **Safe by default:** `managed_platform_ids` starts empty. The bridge will not patch a QQ client until the operator explicitly assigns that exact instance ID after migrating its consumers.
+
+## At a glance
+
+| Capability | What it does |
+| --- | --- |
+| **Interaction bridge** | Routes button callbacks to one registered consumer; supports automatic or manual ACK. |
+| **Group keyboard replies** | Sends passive keyboard replies to a live group event; never retries after a timeout. |
+| **Sender-avatar compatibility** | Maps available sender avatars and can enrich missing channel-DM avatars without blocking message processing. |
+| **Channel-DM text sends (optional)** | Off by default; scoped to configured `qq_official` WS instances and fails closed when the target is ambiguous. |
+
+## Contents
+
+- [Quick setup](#quick-setup)
+- [Ownership and configuration](#ownership-and-configuration)
+- [Consumer API](#consumer-api)
+- [ACK modes](#ack-modes)
+- [Lifecycle constraints](#lifecycle-constraints)
+- [QQ group passive keyboard replies](#qq-group-passive-keyboard-replies)
+- [QQ sender-avatar compatibility patch](#qq-sender-avatar-compatibility-patch)
+- [Optional channel-DM proactive text sends](#optional-channel-dm-proactive-text-sends)
+- [CS Match migration](#cs-match-migration)
+- [Local tests](#local-tests)
+
+## Quick setup
+
+1. Install **QQ 官方适配器修复** from AstrBot's plugin manager, or download the ZIP from the [latest release](https://github.com/tangshusheng/astrbot_plugin_qqbotfix/releases/latest) and import it.
+2. Migrate the consumers that will use this bridge, then add only their QQ platform instance IDs to `managed_platform_ids`.
+3. Save and reload the plugin. Channel-DM proactive text sends are optional and remain off by default.
 
 ## Ownership and configuration
 
