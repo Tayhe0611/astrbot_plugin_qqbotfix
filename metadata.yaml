@@ -2,8 +2,8 @@ name: astrbot_plugin_qqbotfix
 display_name: QQ 官方适配器修复
 desc: 为 QQ 官方适配器提供 interaction 桥接、头像兼容、群被动键盘回复及可选频道私聊文本发送。
 version: 0.4.4
-author: tangshusheng
-repo: "https://github.com/tangshusheng/astrbot_plugin_qqbotfix"
+author: Tayhe
+repo: "https://github.com/Tayhe0611/astrbot_plugin_qqbotfix"
 support_platforms:
   - qq_official
   - qq_official_webhook
